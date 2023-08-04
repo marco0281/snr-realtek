@@ -1,0 +1,159 @@
+[Version]
+Signature = "$CHICAGO$"
+Class = MEDIA
+ClassGUID = {4d36e96c-e325-11ce-bfc1-08002be10318}
+provider = %VENDER%
+CatalogFile = RTL2832U.cat
+DriverVer = 09/09/2011,64.001.0909.2011
+
+[DestinationDirs]
+RTLUSBDEV.Files.Ext = 10,System32\Drivers
+
+[SourceDisksNames]
+1=%DiskName1%
+
+[SourceDisksFiles]
+RTL2832UBDA.sys = 1
+RTL2832UUSB.sys = 1
+
+[Manufacturer]
+%VenderName% = DeviceList,NTamd64
+
+[DeviceList.NTamd64]
+;Mini Card 
+%RTLUSBDEV.DeviceDesc%=RTLUSBDEV, USB\VID_0BDA&PID_2832
+%LT.DeviceDesc%=LT, USB\VID_0413&PID_6680
+%LT2.DeviceDesc%=LT2, USB\VID_0413&PID_6F11
+
+[RTLUSBDEV.NT]
+Include    = ks.inf, kscaptur.inf, bda.inf
+Needs      = KS.Registration,KSCAPTUR.Registration.NT, BDA.Installation.NT
+CopyFiles  = RTLUSBDEV.Files.Ext
+
+[LT.NT]
+Include    = ks.inf, kscaptur.inf, bda.inf
+Needs      = KS.Registration,KSCAPTUR.Registration.NT, BDA.Installation.NT
+CopyFiles  = RTLUSBDEV.Files.Ext
+
+[LT2.NT]
+Include    = ks.inf, kscaptur.inf, bda.inf
+Needs      = KS.Registration,KSCAPTUR.Registration.NT, BDA.Installation.NT
+CopyFiles  = RTLUSBDEV.Files.Ext
+
+
+[RTLUSBDEV.Files.Ext]
+RTL2832UUSB.sys
+RTL2832UBDA.sys,,,2
+
+[RTLUSBDEV.NT.Services]
+Addservice = RTL2832UUSB, 0x00000002, USB.AddService
+Addservice = RTL2832UBDA, ,BDA.AddService
+
+[LT.NT.Services]
+Addservice = RTL2832UUSB, 0x00000002, USB.AddService
+Addservice = RTL2832UBDA, ,BDA.AddService
+
+[LT2.NT.Services]
+Addservice = RTL2832UUSB, 0x00000002, USB.AddService
+Addservice = RTL2832UBDA, ,BDA.AddService
+
+
+[USB.AddService]
+DisplayName    = %RTLUSBDEV.USB_Desc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\RTL2832UUSB.sys
+AddReg         = USB.AddReg
+LoadOrderGroup = Base
+
+[USB.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,RTL2832UUSB.sys
+
+[BDA.AddService] 
+DisplayName    = %RTLUSBDEV.BDA_Desc%                      			
+ServiceType    = 1
+StartType      = 3
+ErrorControl   = 1
+ServiceBinary  = %10%\system32\drivers\RTL2832UBDA.sys
+AddReg         = BDA.AddReg
+
+[BDA.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,RTL2832UBDA.sys
+HKR,,PageOutWhenUnopened,3,01
+HKR,,FilterNameNumber,0x10001,5
+HKR,,FilterName1,,QUAD DVB-T
+HKR,,FilterName2,,PxDTV3000 TS
+HKR,,FilterName3,,Realtek BDA Tuner
+HKR,,FilterName4,,REALTEK DTV Filter
+
+
+[RTLUSBDEV.NT.HW]
+AddReg = BDA.UpperFilter.AddReg			 			
+
+[LT.NT.HW]
+AddReg = BDA.UpperFilter.AddReg	
+
+[LT2.NT.HW]
+AddReg = BDA.UpperFilter.AddReg	
+
+
+[BDA.UpperFilter.AddReg]                       	 			
+HKR,,"UpperFilters",0x00010000,"RTL2832UBDA"   			
+
+[RTLUSBDEV.NT.Interfaces]
+AddInterface = %KSCATEGORY_BDATuner%, %KSSTRING_RTL2832UTunerFilter%, RTLUSBDEV.TunerFilter.Interface
+
+[RTLUSBDEV.TunerFilter.Interface]
+AddReg = RTLUSBDEV.TunerFilter.Interface.AddReg
+
+[RTLUSBDEV.TunerFilter.Interface.AddReg]
+HKR,,CLSID,,%Proxy.CLSID%
+HKR,,FriendlyName,,%RTL2832UTuner.FilterDesc%
+
+
+[LT.NT.Interfaces]
+AddInterface = %KSCATEGORY_BDATuner%, %KSSTRING_RTL2832UTunerFilter%, LT.TunerFilter.Interface
+
+[LT.TunerFilter.Interface]
+AddReg = LT.TunerFilter.Interface.AddReg
+
+[LT.TunerFilter.Interface.AddReg]
+HKR,,CLSID,,%Proxy.CLSID%
+HKR,,FriendlyName,,%LTTuner.FilterDesc%
+
+
+[LT2.NT.Interfaces]
+AddInterface = %KSCATEGORY_BDATuner%, %KSSTRING_RTL2832UTunerFilter%, LT2.TunerFilter.Interface
+
+[LT2.TunerFilter.Interface]
+AddReg = LT2.TunerFilter.Interface.AddReg
+
+[LT2.TunerFilter.Interface.AddReg]
+HKR,,CLSID,,%Proxy.CLSID%
+HKR,,FriendlyName,,%LT2Tuner.FilterDesc%
+
+
+
+[Strings]
+Proxy.CLSID = "{17CCA71B-ECD7-11D0-B908-00A0C9223196}"
+KSCATEGORY_BDATuner = "{71985F48-1CA1-11d3-9CC8-00C04F7971E0}"
+KSCATEGORY_BDACapture = "{FD0A5AF4-B41D-11d2-9C95-00C04F7971E0}"
+KSSTRING_RTL2832UTunerFilter = "{9d4afc32-0f42-45d9-b590-af9295699871}"
+
+VenderName = "Realtek"
+VENDER = "REALTEK"
+RTL2832UTuner.FilterDesc = "REALTEK DTV Filter"
+LTTuner.FilterDesc = "QUAD DVB-T"
+LT2Tuner.FilterDesc = "PxDTV3000 TS"
+
+RTLUSBDEV.DeviceDesc = "REALTEK 2832U Device"
+LT.DeviceDesc = "QUAD DVB-T"
+LT2.DeviceDesc = "WinFast PxDTV3000 TS"
+
+RTLUSBDEV.USB_Desc = "REALTEK 2832U USB Driver"
+RTLUSBDEV.BDA_Desc = "REALTEK 2832U BDA Driver"
+
+DiskName1 = "RTL2832U Device installation disk"
